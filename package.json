@@ -11,5 +11,8 @@
     "url": "https://github.com/hlandao/swagger-to-typescript"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "exec-sync": "0.1.17"
+  }
 }
