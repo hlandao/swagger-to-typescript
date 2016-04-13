@@ -1,6 +1,6 @@
 var exec = require('child_process').exec
 
-function swaggerToTypeScript(swaggerYamlPath, outputPath, namespace, pathToJar) {
+function swaggerToTypeScript(swaggerYamlPath, outputPath, namespace, pathToJar, done) {
   pathToJar = pathToJar || (__dirname+'/swagger-codegen-cli.jar');
   var child = exec('/usr/bin/java -jar ' + pathToJar + ' generate -i '+swaggerYamlPath+'  -l typescript-angular -o '+outputPath+' --model-package '+namespace+' --api-package '+namespace,
     function (error, stdout, stderr){
@@ -9,6 +9,8 @@ function swaggerToTypeScript(swaggerYamlPath, outputPath, namespace, pathToJar) 
       if(error !== null){
         console.log('exec error: ' + error);
       }
+
+      done && done (error);
     });
 
 }
