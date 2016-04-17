@@ -13,6 +13,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "exec-sync": "0.1.17"
+    "exec-sync": "0.1.16"
   }
 }
