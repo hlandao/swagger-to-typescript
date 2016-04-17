@@ -1,6 +1,6 @@
 {
   "name": "swagger-to-typescript",
-  "version": "1.0.17",
+  "version": "1.0.19",
   "description": "Swagger YAML to Typescript typings",
   "main": "swagger.js",
   "scripts": {
@@ -13,6 +13,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "exec-sync": "0.1.16"
+    "exec-sync": "0.1.6"
   }
 }
