@@ -6,6 +6,4 @@ function swaggerToTypeScript(swaggerYamlPath, outputPath, namespace, pathToJar, 
   done && done (error);
 }
 
-swaggerToTypeScript("./iris-payments.swagger.yaml", "./", "Hadar")
-
 module.exports = swaggerToTypeScript
