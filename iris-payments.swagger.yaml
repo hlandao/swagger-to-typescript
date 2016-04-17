@@ -1,0 +1,798 @@
+swagger: '2.0'
+info:
+  version: '1.0.0'
+  title: Iris Payments API
+  description:
+   |
+   This document describes the entire IRIS services Rest API.
+  contact:
+    name: T24 Api Team
+    email: liran@ldb.co.il
+    url: http://ldb.co.il
+  license:
+    name: MIT
+    url: http://opensource.org/licenses/MIT
+host: localhost:3020
+basePath: /api-iris/api.svc/GB0010001
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  basicAuth:
+    type: basic
+    description: HTTP Basic
+security:
+  - basicAuth: []
+################################################################################
+#                                   Parameters                                 #
+################################################################################
+################################################################################
+#                                   Paths                                      #
+################################################################################
+paths:
+  /p2p/customer:
+    post:
+      tags:
+        - Customers
+      description: Creates a new P2P customer
+      x-swagger-router-controller: payments-customers
+      operationId: createCustomer
+      produces:
+        - application/json
+      parameters:
+        - name: createCustomerRequest
+          in: body
+          description: The details of the P2P customer to create
+          required: true
+          schema:
+            $ref: '#/definitions/CreateCustomerRequest'
+      responses:
+        '200':
+          description: Success in creating the customer
+          schema:
+            $ref: '#/definitions/CreateCustomerResponse'
+  /p2p/customer/{username}/delete:
+    get:
+      tags:
+        - Customers
+      description: Deletes a customer by usernmae in Transmit - this is not part of the T24 api, it's an helper endpoint for Transmit.
+      x-swagger-router-controller: payments-customers
+      operationId: deleteTransmitCustomer
+      produces:
+        - application/json
+      parameters:
+        - name: username
+          in: path
+          description: The username of the customer in Transmit
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Success in creating the customer
+  /p2p/customerByMobile/{phoneNumber}:
+    get:
+      tags:
+        - Customers
+      description: Get customer details by phone number
+      x-swagger-router-controller: payments-customers
+      operationId: getCustomerByMobile
+      produces:
+        - application/json
+      parameters:
+        - name: phoneNumber
+          in: path
+          description: The phone number of the customer
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Got the customer details
+          schema:
+             $ref: '#/definitions/GetCustomerByMobileResponse'
+  /p2p/getProf/{customerId}/profile:
+    get:
+      tags:
+        - Customers
+      description: Get the profile of a P2P customer
+      x-swagger-router-controller: payments-customers
+      operationId: getCustomerProfile
+      produces:
+        - application/json
+      parameters:
+        - name: customerId
+          in: path
+          description: The id of the customer
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Got the profile of the customer sucessfully
+          schema:
+            $ref: '#/definitions/CustomerProfileResponse'
+  /p2p/setProf/{customerId}/profile:
+    post:
+      tags:
+        - Customers
+      description: Set a new profile of a P2P customer
+      x-swagger-router-controller: customers
+      operationId: setCustomerProfile
+      produces:
+        - application/json
+      parameters:
+        - name: customerId
+          in: path
+          description: The id of the customer
+          required: true
+          type: string
+        - name: setCustomerProfile
+          in: body
+          description: The details of the P2P customer's profile to update
+          required: true
+          schema:
+            $ref: '#/definitions/setCustomerProfileRequest'
+      responses:
+        '200':
+          description: Set the profile of the customer sucessfully
+          schema:
+            $ref: '#/definitions/setCustomerProfileResponse'
+  /p2p/setcard/{customerId}/profile:
+     post:
+      tags:
+        - Customers
+      description: Set/ update credut card details of a P2P customer
+      x-swagger-router-controller: payments-customers
+      operationId: setCustomerCard
+      produces:
+        - application/json
+      parameters:
+        - name: customerId
+          in: path
+          description: The id of the customer
+          required: true
+          type: string
+        - name: setCustomerCard
+          in: body
+          description: The details of the P2P customer's credit card to update
+          required: true
+          schema:
+            $ref: '#/definitions/setCustomerCardRequest'
+      responses:
+        '200':
+          description: Set/ updated credit card details of the customer sucessfully
+          schema:
+            $ref: '#/definitions/setCustomerCardResponse'
+  /p2p/setacct/{customerId}/profile:
+     post:
+      tags:
+        - Customers
+      description: Set/ update account details of a P2P customer
+      x-swagger-router-controller: payments-customers
+      operationId: setCustomerAccount
+      produces:
+        - application/json
+      parameters:
+        - name: customerId
+          in: path
+          description: The id of the customer
+          required: true
+          type: string
+        - name: setCustomerAccount
+          in: body
+          description: The details of the P2P customer's account to update
+          required: true
+          schema:
+            $ref: '#/definitions/setCustomerAccountRequest'
+      responses:
+        '200':
+          description: Set/ updated account details of the customer sucessfully
+          schema:
+            $ref: '#/definitions/setCustomerAccountResponse'
+  /p2p/ben/{customerId}:
+     get:
+      tags:
+        - Beneficiaries
+      summary: Get beneficiary list for specific customer
+      operationId: getBeneficiaryList
+      x-swagger-router-controller: beneficiaries
+      parameters:
+        - name: customerId
+          in: path
+          description: The LDB id of the P2P customer. Can be got  by getCustomerByMobile.
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Got the customer details
+          schema:
+             $ref: "#/definitions/BeneficiaryDetailsResponse"
+  /p2p/ben/{customerId}/beneficiary/{beneficiaryId}:
+     get:
+      tags:
+        - Beneficiaries
+      summary: Get beneficiary details for customer and beneficiary id
+      operationId: getBeneficiaryDetails
+      x-swagger-router-controller: beneficiaries
+      parameters:
+        - name: customerId
+          in: path
+          description: The id of the customer that creates the payment.
+          required: true
+          type: string
+        - name: beneficiaryId
+          in: path
+          description: The id of the beneficiary that we want to fetch.
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Got the customer details
+          schema:
+            $ref: "#/definitions/BeneficiaryDetailsResponse"
+  /p2p/customer/{customerId}/historyList:
+    get:
+      tags:
+        - History
+      summary: Get history list details for customer that open payment's history.
+      operationId: getHistoryList
+      x-swagger-router-controller: payments-history
+      parameters:
+        - name: customerId
+          in: path
+          description: The id of the customer that creates the payment.
+          required: true
+          type: string
+      responses:
+          '200':
+            description: Got the history list
+            schema:
+               $ref: "#/definitions/getHistoryListResponse"
+  /p2p/customer/{customerId}/history/{counterpartyId}:
+    get:
+      tags:
+        - History
+      summary: Get operations list details for specific counterparty.
+      operationId: getItemHistory
+      x-swagger-router-controller: payments-history
+      parameters:
+        - name: customerId
+          in: path
+          description: The id of the customer that creates the payment.
+          required: true
+          type: string
+        - name: counterpartyId
+          in: path
+          description: The id of the counterparty with whom we want to performed operations.
+          required: true
+          type: string
+      responses:
+          '200':
+            description: Got the history item (counterparty operations list) successfully.
+            schema:
+              $ref: '#/definitions/getItemHistoryResponse'
+  /MoneyOriginReasons:
+    get:
+      tags:
+        - Payments
+      summary: Get Money origin reasons details for payment action.
+      operationId: MoneyOriginReasons
+      x-swagger-router-controller: payments
+      responses:
+        '200':
+          description: Got the customer details
+          schema:
+            $ref: "#/definitions/MoneyOriginReasonsResponse"
+  /bank/list:
+    get:
+      tags:
+        - Payments
+      summary: Get bank and branches list.
+      operationId: getBankAndBranches
+      x-swagger-router-controller: payments
+      responses:
+          '200':
+            description: Got the bank and branches list successfully
+            schema:
+              $ref: "#/definitions/getBankAndBranchesResponse"
+  /p2p/customer/{customerId}/pay:
+    get:
+      tags:
+        - Payments
+      summary: create payment for specific counterparty by mobileNumber,P2P user, beneficiary or bank details.
+      operationId: createPayment
+      x-swagger-router-controller: payments
+      parameters:
+        - name: customerId
+          in: path
+          description: The id of the customer that creates the payment.
+          required: true
+          type: string
+        - name: paymentRequest
+          in: body
+          description: The details of the payment to create
+          required: true
+          schema:
+            $ref: '#/definitions/PaymentRecord'
+      responses:
+        '200':
+          description: Success in creating the customer
+          schema:
+            $ref: '#/definitions/PaymentRecord'
+############################################################################
+#                                   Definitions                                #
+#############################################################################
+definitions:
+  getBankAndBranchesResponse:
+    type: object
+    properties:
+      _embedded:
+        properties:
+          item:
+            type: array
+            items:
+              type: object
+              required:
+                - BankCode
+                - BankName
+                - BranchCode
+                - BranchName
+                - PrimaryKey
+              properties:
+                BankCode:
+                  type: string
+                  description: bank code as listed in Israeli central bank (e.g. "10" for Leumi).
+                BankName:
+                  type: string
+                  description: bank name as listed in Israeli central bank (e.g. "Bank Leumi Le-Israel B.M" for Leumi).
+                BranchCode:
+                  type: string
+                  description: branch code as listed in Israeli central bank (e.g. "857").
+                BranchName:
+                  type: string
+                  description: branch name as listed in Israeli central bank (e.g. "Haifa").
+                PrimaryKey:
+                  type: string
+                  description: Redundant field. we should ignore it.
+  CreateCustomerRequest:
+    type: object
+    required:
+      - BankSortCode
+      - BlmP2pCustomer
+      - CcExpiryDate
+      - CcFirstSix
+      - CcLastFour
+      - CcToken
+      - CustFullName
+      - CustLink
+      - CustNatId
+      - FullAcctNo
+      - MobileNumber
+      - NotifyMethod
+      - TacVersion
+      - TermsAccepted
+      - FePassword
+    properties:
+      BankSortCode:
+        type: string
+        description: Bank and branch number combined (e.g. 10100 for bank=10 branch=100). Required for NON LDB customers. Not required for LDB customers(send "").
+      BlmP2pCustomer:
+        type: string
+        description: P2P customer id. Always send empty string "".
+      CcExpiryDate:
+        type: string
+        description: Credit card expiration date (e.g. 20160401 for 04/2016). Required for NON LDB customers. Not required for LDB customers(send "").
+      CcFirstSix:
+        type: string
+        description: First 6 digits of the credit card number. In case of short credit card number send empty string "". Required for NON LDB customers. Not required for LDB customers(send "")
+      CcLastFour:
+        type: string
+        description: Last 4 digits of the credit card number. Required for NON LDB customers. Not required for LDB customers(send "").
+      CcToken:
+        type: string
+        description: The token recieved from CreditGuard. Required for NON LDB customers. Not required for LDB customers(send "").
+      CustFullName:
+        type: string
+        description: Customer full name that he enters in the registration process. Required for NON LDB customers. Not required for LDB customers(send "").
+      CustLink:
+        type: string
+        description: Existing LDB customer ID. Always send empty string "".
+      CustNatId:
+        type: string
+        description: Customer National ID number. Required for NON LDB customers. Not required for LDB customers(send "").
+      FullAcctNo:
+        type: string
+        description: Bank account number, it's a string but it must contain inly digits (e.g. "23712"). Required for NON LDB customers. Not required for LDB customers(send "").
+      MobileNumber:
+        type: string
+        description: Mobile phone number. Required for both NON LDB customers and LDB customers (e.g. "0525123512").
+      NotifyMethod:
+        type: string
+        default: YES
+        enum:
+          - YES
+        description: The customer approved the push-notifications permission in the mobile-client.
+      TermsAccepted:
+        type: string
+        description: Customer accepted the Terms of service.
+        default: YES
+        enum:
+          - YES
+      TacVersion:
+        type: string
+        description: Terms of service version number (e.g. "0.0.1")
+      FePassword:
+        type: string
+  CreateCustomerResponse:
+    allOf:
+      - $ref: '#/definitions/CreateCustomerRequest'
+      - type: object
+        required:
+          - StatusCode
+          - StatusDesc
+        properties:
+          StatusCode:
+            type: string
+            description: Redundant field. we should ignore it.
+          StatusDesc:
+            type: string
+            description: Redundant field. we should ignore it.
+  CustomerProfileResponse:
+    type: object
+    required:
+      - CustFullName
+      - Id
+      - CustNatId
+      - FullAcctNo
+      - BankSortCode
+      - CcLastFour
+      - MobileNumber
+      - WorkingBalance
+      - NotifyMethod
+    properties:
+      CustFullName:
+        type: string
+        description: Full name of the account.
+      Id:
+        type: string
+        description: P2P customer ID.
+      CustNatId:
+        type: string
+        description: Customer's Identity Card (e.g. "311945677")
+      FullAcctNo:
+        type: string
+        description: Bank account number, it's a string but it must contain only digits (e.g. "23712")
+      BankSortCode:
+        type: string
+        description: Bank number and Branch Number. Required for NON LDB customers.
+      CcLastFour:
+        type: string
+        description: Credit card's last four digits. Required for NON LDB customers.
+      MobileNumber:
+        type: string
+        description: Mobile phone number. Required for both NON LDB customers and LDB customers (e.g. "0525123512").
+      NotifyMethod:
+        type: string
+        default: YES
+        enum:
+          - YES
+        description: The customer approved the push-notifications permission in the mobile-client.
+      WorkingBalance:
+        type: string
+        description: Updated balance of a P2P custumer who has an Orion account as well. Required only for LDB customers
+  setCustomerProfileRequest:
+    type: object
+    required:
+      - BlmP2pCustomer
+      - CstFullName
+      - MobileNumber
+      - NotifyMethod
+    properties:
+      BlmP2pCustomer:
+        type: string
+        description: P2P customer id - the one we want to set new
+      CstFullName:
+        type: string
+        description: Customer full name that he enters in the new set process.
+      MobileNumber:
+        type: string
+        description:  Mobile phone number that customer wants to update(e.g. "0525123512").
+      NotifyMethod:
+        type: string
+        default: YES
+        enum:
+          - YES
+        description: updated push-notifications permission by customer.
+  setCustomerProfileResponse:
+    allOf:
+      - $ref: '#/definitions/setCustomerProfileRequest'
+      - type: object
+  setCustomerCardRequest:
+    type: object
+    required:
+      - BlmP2pCustomer
+      - CcExpiryDate
+      - CcFirstSix
+      - CcLastFour
+      - CcToken
+    properties:
+      BlmP2pCustomer:
+        type: string
+        description: P2P customer id - the one we want to set new
+      CcExpiryDate:
+        type: string
+        description: Credit card expiration date (e.g. "20160401" for "04/2016"). Required for NON LDB customers. Not required for LDB customers.
+      CcFirstSix:
+        type: string
+        description: First 6 digits of the credit card number. In case of short credit card number send empty string "". Required for NON LDB customers. Not required for LDB customers.
+      CcLastFour:
+        type: string
+        description: Last 4 digits of the credit card number. Required for NON LDB customers. Not required for LDB customers.
+      CcToken:
+        type: string
+        description: The token recieved from CreditGuard. Required for NON LDB customers. Not required for LDB customers.
+  setCustomerCardResponse:
+     allOf:
+       - $ref: '#/definitions/setCustomerCardRequest'
+       - type: object
+  setCustomerAccountRequest:
+    type: object
+    required:
+      - BankSortCode
+      - BlmP2pCustomer
+      - FullAccNo
+    properties:
+      BankSortCode:
+        type: string
+        description: Bank and branch number combined (e.g. 10100 for bank=10 branch=100). Required for NON LDB customers. Not required for LDB customers.
+      BlmP2pCustomer:
+        type: string
+        description: P2P customer id - the one we want to set new
+      FullAccNo:
+        type: string
+        description: Bank account number, it's a string but it must contain inly digits (e.g. "23712"). Required for NON LDB customers. Not required for LDB customers.
+  setCustomerAccountResponse:
+     allOf:
+       - $ref: '#/definitions/setCustomerAccountRequest'
+       - type: object
+  getHistoryListResponse:
+    type: object
+    properties:
+      _embedded:
+        properties:
+          item:
+            type: array
+            items:
+              $ref: '#/definitions/HistoryListItem'
+  HistoryListItem:
+    type: object
+    required:
+      - Amount
+      - FullName
+      - MobileNumber
+      - OperationType
+      - PrimaryKey
+      - P2pReceiver
+      - Sender
+      - TransactionDate
+      - BenefId
+    properties:
+      Amount:
+        type: string
+        description: amount of the transaction.
+      FullName:
+        type: string
+        description: Full name of the counterparty (First + last name, as it is appeared in the contacts).
+      MobileNumber:
+        type: string
+        description: mobile number of the counterparty, as it is appeared in the contacts.
+      OperationType:
+        type: string
+        enum:
+          - 0
+          - 1
+        description: describes the type of the payment ("0"/"1"). "1" for request payment and "0" for incoming funds.
+      PrimaryKey:
+        type: string
+        description: Redundant field. we should ignore it.
+      P2pReceiver:
+        type: string
+        description: customer ID of the receiver (the one who recived the payment).
+      Sender:
+        type: string
+        description: customer ID of the sender (the one who sent the payment).
+      TransactionDate:
+        type: string
+        description: the date on the payment (in format of YYYYMMDD e.g. "2016.02.11").
+      BenefId:
+        type: string
+        description: the beneficiary id.
+  BeneficiaryDetailsResponse:
+    type: object
+    properties:
+      _embedded:
+        properties:
+          item:
+            type: array
+            items:
+              $ref: '#/definitions/BeneficiaryDetails'
+  BeneficiaryDetails:
+    type: object
+    required:
+          - AccountNo
+          - BankNo
+          - BeneficiaryID
+          - BranchNo
+          - FullName
+          - OwningCustomer
+    properties:
+      AccountNo:
+        type: string
+        description: Beneficiary's bank account number. It will be an integer type, but must include only digits.
+      BankNo:
+        type: string
+        description: Beneficiary's bank number. It will be an integer type, but must include only digits.
+      BeneficiaryID:
+        type: string
+        description: BeneficiaryID given to the beneficiary (e.g. "BBEN151120FM1MT9GB")
+      BranchNo:
+        type: string
+        description: Beneficiary's branch number. It will be an integer type, but must include only digits.
+      FullName:
+        type: string
+        description: Full name of the beneficiary given by customer while paying to the beneficiary.
+      OwningCustomer:
+        type: string
+        description: The LDB id of the P2P customer. Can be got  by getCustomerByMobile
+  GetCustomerByMobileResponse:
+    type: object
+    properties:
+      _embedded:
+        properties:
+          item:
+            type: array
+            items:
+              type: object
+              required:
+                - CustomerId
+                - FullName
+                - P2PCustomerId
+                - PrimaryKey
+              properties:
+                CustomerId:
+                  type: string
+                  description: Will return CustomerID for LDB customers. Non-LDB customer will return empty.
+                FullName:
+                  type: string
+                  description: Customer full name as it was saved in the account details. Should be at least 2 characters.
+                P2PCustomerId:
+                  type: string
+                  description: P2P customer ID.
+                PrimaryKey:
+                  type: string
+                  description: Redundant field. we should ignore it.
+  MoneyOriginReasonsResponse:
+    type: object
+    properties:
+      _embedded:
+        properties:
+          item:
+            type: array
+            items:
+              type: object
+              required:
+                - Id
+                - reasonCode
+                - reasonDescription
+              properties:
+                Id:
+                  type: string
+                  description: Redundant field. we should ignore it.
+                reasonCode:
+                  type: string
+                  description: Code of the money origin reason (from a specified list).
+                reasonDescription:
+                  type: string
+                  description: Description of the money origin reason (from a specified list).
+  getItemHistoryResponse:
+    type: object
+    properties:
+      _embedded:
+        properties:
+          item:
+            type: array
+            items:
+              $ref: '#/definitions/ItemHistory'
+  ItemHistory:
+    type: object
+    required:
+      - Amount
+      - OperationDateTime
+      - OperationStatus
+      - OperationType
+      - Reciever
+      - Sender
+      - TxnReference
+    properties:
+      Amount:
+        type: string
+        description: amount of the transaction.
+      FreeTextMvGroup:
+        type: array
+        items:
+          type: object
+          properties:
+            FreeText:
+              type: string
+        description: Free text inserted by the sender when making the payment.
+      OperationDateTime:
+        type: string
+        description: Date and time of the operation in format of date +time (e.g. "20160211181400")
+      OperationStatus:
+        type: string
+        description: The status of the operation (e.g. "FINAL")
+      OperationType:
+        enum:
+          - 0
+          - 1
+        description: describes the type of the payment ("0"/"1"). "1" for request payment and "0" for incoming funds.
+      PaymentDetailsMvGroup:
+        type: array
+        items:
+          type: object
+          properties:
+            PaymentDetails:
+              type: string
+        description: Payment details inserted by the sender when making the payment.
+      PrimaryKey:
+        type: string
+        description: Redundant field. we should ignore it.
+      Reciever:
+        type: string
+        description: customer ID of the receiver (the one who recived the payment).
+      Sender:
+        type: string
+        description: customer ID of the sender (the one who sent the payment).
+      TxnReference:
+        type: string
+        description: Transaction Id for this specific Operation (will be needed for acepting and rejecting payment)
+  PaymentRecord:
+    type: object
+    required:
+      - Amount
+    properties:
+      DataId:
+        type: string
+      TransRefId:
+        type: string
+      P2pCustId:
+        type: string
+      CptyP2pcustId:
+        type: string
+      BenefId:
+        type: string
+      CptyBnk:
+        type: string
+      CptyBrch:
+        type: string
+      CptyAcctNo:
+        type: string
+      CptyFullName:
+        type: string
+      CptyMobile:
+        type: string
+      Amount:
+        type: string
+      IsUnrestricted:
+        type: string
+      TransReason:
+        type: string
+      TransFreeText:
+        type: string
+      ValueDate:
+        type: string
+      Frequency:
+        type: string
+      NoOfPayments:
+        type: string
