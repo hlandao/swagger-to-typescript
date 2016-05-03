@@ -1,6 +1,6 @@
 {
   "name": "swagger-to-typescript",
-  "version": "1.0.51",
+  "version": "1.0.52",
   "description": "Swagger YAML to Typescript typings",
   "main": "swagger.js",
   "scripts": {
