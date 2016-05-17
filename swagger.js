@@ -10,14 +10,14 @@ function swaggerToTypeScript(swaggerYamlPath, outputPath, namespace, pathToJar, 
     done && done();
   }
   else if (child && child.status && child.status === 1) {
-    throw "Unable to compile Swagger YAML file: " + swaggerYamlPath + " due to generator errors: \n " + child.stderr;
+    throw new Error("Unable to compile Swagger YAML file: " + swaggerYamlPath + " due to generator errors: \n " + child.stderr);
   }
   else if (child && child.status && child.status === 130) {
-    throw "Unable to compile Swagger YAML file due user interaption command, please run again!";
+    throw new Error("Unable to compile Swagger YAML file due user interaption command, please run again!");
   }
   else {
     console.log(child.stderr);
-    throw "Unable to compile Swagger YAML file due to error: ";
+    throw new Error("Unable to compile Swagger YAML file due to error!");
   }
 
 }
